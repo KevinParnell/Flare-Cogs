@@ -10,11 +10,12 @@ class Staff(BaseCog):
 
     @commands.command(aliases=["ateam", "adminteam", "admins"])
     async def staff(self, ctx):
+        """WC-RP Staff Team"""
         colour = discord.Color.from_hsv(random.random(), 1, 1)
         embed = discord.Embed(
             title="WC-RP Staff Team", colour=colour)
         embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
-        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="**Administration Team**", inline=True)
+        embed.add_field(name="Administration Team", value="\N{ZERO WIDTH SPACE}", inline=True)
         embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
         for member in ctx.guild.members:
             if member.top_role.name == "Lead Administrator":
@@ -34,6 +35,7 @@ class Staff(BaseCog):
 
     @commands.command()
     async def management(self, ctx):
+        """WC-RP Management"""
         colour = discord.Color.from_hsv(random.random(), 1, 1)
         embed = discord.Embed(
             title="WC-RP Management Team", colour=colour)
@@ -52,3 +54,5 @@ class Staff(BaseCog):
         for member in ctx.guild.members:
             if member.top_role.name == "Lead Administrator":
                 embed.add_field(name="Lead Admin", value=member.display_name, inline=True)
+                await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
