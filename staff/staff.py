@@ -60,4 +60,5 @@ class Staff(BaseCog):
         for member in ctx.guild.members:
             if member.top_role.name == "Lead Administrator":
                 embed.add_field(name="Lead Admin", value=member.display_name, inline=True)
+        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
         await ctx.send(embed=embed)
