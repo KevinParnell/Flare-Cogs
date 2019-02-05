@@ -29,6 +29,7 @@ class Staff(BaseCog):
             if member.top_role.name == "Lead Administrator":
                 embed.add_field(name="Lead Admin", value=member.display_name, inline=True)
         embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
+        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
         embed.add_field(name="\N{ZERO WIDTH SPACE}", value="Administration Team", inline=True)
         embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
         embed.add_field(name="Senior Administrator", value="Jamie", inline=True)
