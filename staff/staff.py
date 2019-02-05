@@ -8,11 +8,35 @@ BaseCog = getattr(commands, "Cog", object)
 class Staff(BaseCog):
     """WC-RP's Commands"""
 
-    @commands.command()
+    @commands.command(aliases=["ateam", "adminteam", "admins"])
     async def staff(self, ctx):
         colour = discord.Color.from_hsv(random.random(), 1, 1)
         embed = discord.Embed(
             title="WC-RP Staff Team", colour=colour)
+        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
+        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="**Administration Team**", inline=True)
+        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
+        for member in ctx.guild.members:
+            if member.top_role.name == "Lead Administrator":
+                embed.add_field(name="Lead Admin", value=member.display_name, inline=True)
+        embed.add_field(name="Senior Administrator", value="Jamie", inline=True)
+        for member in ctx.guild.members:
+            if member.top_role.name == "Senior Administrator":
+                embed.add_field(name="Senior Administrator", value=member.display_name, inline=True)
+        for member in ctx.guild.members:
+            if member.top_role.name == "Administrator":
+                embed.add_field(name="Administrator", value=member.display_name, inline=True)
+        for member in ctx.guild.members:
+            if member.top_role.name == "IG Moderator":
+                embed.add_field(name="Moderator", value=member.display_name, inline=True)
+
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def management(self, ctx):
+        colour = discord.Color.from_hsv(random.random(), 1, 1)
+        embed = discord.Embed(
+            title="WC-RP Management Team", colour=colour)
         embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
         embed.add_field(name="Management", value="\N{ZERO WIDTH SPACE}", inline=True)
         embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
@@ -28,19 +52,3 @@ class Staff(BaseCog):
         for member in ctx.guild.members:
             if member.top_role.name == "Lead Administrator":
                 embed.add_field(name="Lead Admin", value=member.display_name, inline=True)
-        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
-        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
-        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="**Administration Team**", inline=True)
-        embed.add_field(name="\N{ZERO WIDTH SPACE}", value="\N{ZERO WIDTH SPACE}", inline=True)
-        embed.add_field(name="Senior Administrator", value="Jamie", inline=True)
-        for member in ctx.guild.members:
-            if member.top_role.name == "Senior Administrator":
-                embed.add_field(name="Senior Administrator", value=member.display_name, inline=True)
-        for member in ctx.guild.members:
-            if member.top_role.name == "Administrator":
-                embed.add_field(name="Administrator", value=member.display_name, inline=True)
-        for member in ctx.guild.members:
-            if member.top_role.name == "IG Moderator":
-                embed.add_field(name="Moderator", value=member.display_name, inline=True)
-
-        await ctx.send(embed=embed)
