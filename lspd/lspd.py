@@ -2,7 +2,7 @@ from redbot.core import commands, Config
 import discord
 import random
 
-defaults_global = {"apbs": {}}
+defaults_global = {"apbs": {}, "users": {}}
 
 
 class LSPD(commands.Cog):
@@ -26,14 +26,20 @@ class LSPD(commands.Cog):
         name = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
         await ctx.send(f"The suspect you have entered is: {name.content}\nPlease now enter the reason for this APB.")
         crimes = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
-        await ctx.send(f"Reason added successfully, please enter your name now.")
-        officer = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
 
         async with self.config.apbs() as apb:
             key = name.content
-            apb[key] = {"name": name.content, "reason": crimes.content, "officer": officer.content,
+            apb[key] = {"name": name.content, "reason": crimes.content, "officer": ctx.author.display_name,
                         "creator": ctx.author.id}
         await ctx.send("APB Added Successfully.")
+
+        async with self.config.users() as users:
+            for user in users:
+                if users[user]:
+                    destination = self.bot.get_user(int(user))
+                    await destination.send(
+                        "A new APB has been posted!\n---------------\nSuspect: {}\nReason: {}\nAPB Issued By: {}".format(
+                            name.content, crimes.content, ctx.author.display_name))
 
     @apb.command()
     async def delete(self, ctx, *, name: str):
@@ -59,7 +65,10 @@ class LSPD(commands.Cog):
             embed = discord.Embed(
                 title="Current APBs", colour=colour)
             for name in data:
-                embed.add_field(name="Suspect:", value=data[name]['name'], inline=True)
+                if len(data[name]['name']) > 20:
+                    embed.add_field(name="Reason:", value=f"{data[name]['name'][:20]}...", inline=True)
+                else:
+                    embed.add_field(name="Suspect:", value=data[name]['name'], inline=True)
                 if len(data[name]['reason']) > 20:
                     embed.add_field(name="Reason:", value=f"{data[name]['reason'][:20]}...", inline=True)
                 else:
@@ -80,3 +89,14 @@ class LSPD(commands.Cog):
             await ctx.send(
                 "APB Information for {}:\nReason: {}\nIssued by: {}".format(name, apbs[name]['reason'],
                                                                             apbs[name]['officer']))
+
+    @apb.command()
+    async def notify(self, ctx, status: bool):
+        """Enable DM notifications for new APBs"""
+        async with self.config.users() as users:
+            key = str(ctx.author.id)
+            users[key] = status
+            if status:
+                await ctx.send("You've enabled DM notifications for new APBs.")
+            else:
+                await ctx.send("You've disabled DM notifications for new APBs.")
