@@ -20,7 +20,6 @@ class Staff(BaseCog):
         for member in ctx.guild.members:
             if member.top_role.name == "Lead Administrator":
                 embed.add_field(name="Lead Admin", value=member.display_name, inline=True)
-        embed.add_field(name="Senior Administrator", value="Jamie", inline=True)
         for member in ctx.guild.members:
             if member.top_role.name == "Senior Administrator":
                 embed.add_field(name="Senior Administrator", value=member.display_name, inline=True)
