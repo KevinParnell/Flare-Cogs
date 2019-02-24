@@ -73,19 +73,6 @@ class Staff(BaseCog):
         settings, 'appearance' tab. Then right click a user
         and copy their id"""
         destination = discord.utils.get(ctx.bot.get_all_members(), id=user_id)
-        if destination is None:
-            await ctx.send(
-                _(
-                    "Invalid ID or user not found. You can only "
-                    "send messages to people I share a server "
-                    "with."
-                )
-            )
-            return
-
-        fake_message = namedtuple("Message", "guild")
-        prefixes = await ctx.bot.command_prefix(ctx.bot, fake_message(guild=None))
-        prefix = prefixes[0]
         description = _("Reply from WC-RP Staff Member {}").format(ctx.author.display_name)
         content = _("You can reply to this message just by replying here.")
         if await ctx.embed_requested():
