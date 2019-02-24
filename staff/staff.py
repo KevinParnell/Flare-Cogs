@@ -73,8 +73,8 @@ class Staff(BaseCog):
         settings, 'appearance' tab. Then right click a user
         and copy their id"""
         destination = discord.utils.get(ctx.bot.get_all_members(), id=user_id)
-        description = _("Reply from WC-RP Staff Member {}").format(ctx.author.display_name)
-        content = _("You can reply to this message just by replying here.")
+        description = "Reply from WC-RP Staff Member {}".format(ctx.author.display_name)
+        content = "You can reply to this message just by replying here."
         if await ctx.embed_requested():
             e = discord.Embed(colour=discord.Colour.red(), description=message)
 
@@ -88,17 +88,15 @@ class Staff(BaseCog):
                 await destination.send(embed=e)
             except discord.HTTPException:
                 await ctx.send(
-                    _("Sorry, I couldn't deliver your message to {}").format(destination)
-                )
+                    "Sorry, I couldn't deliver your message to {}").format(destination)
             else:
-                await ctx.send(_("Message delivered to {}").format(destination))
+                await ctx.send("Message delivered to {}".format(destination))
         else:
             response = "{}\nMessage:\n\n{}".format(description, message)
             try:
                 await destination.send("{}\n{}".format(box(response), content))
             except discord.HTTPException:
                 await ctx.send(
-                    _("Sorry, I couldn't deliver your message to {}").format(destination)
-                )
+                    "Sorry, I couldn't deliver your message to {}").format(destination)
             else:
-                await ctx.send(_("Message delivered to {}").format(destination))
+                await ctx.send"Message delivered to {}".format(destination))
