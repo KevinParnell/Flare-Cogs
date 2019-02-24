@@ -99,4 +99,4 @@ class Staff(BaseCog):
                 await ctx.send(
                     "Sorry, I couldn't deliver your message to {}").format(destination)
             else:
-                await ctx.send"Message delivered to {}".format(destination))
+                await ctx.send("Message delivered to {}".format(destination))
