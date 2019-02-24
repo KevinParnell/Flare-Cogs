@@ -1,6 +1,7 @@
 import discord
 from redbot.core import commands, checks, Config
 import random
+from collections import namedtuple
 
 BaseCog = getattr(commands, "Cog", object)
 
@@ -63,8 +64,7 @@ class Staff(BaseCog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.has_any_role("Moderator", "IG Moderator", "Server Management", "Server Owner", "Senior Administrator",
-                           "Administrator")
+    @commands.has_any_role("Moderator", "Scipter",  "IG Moderator", "Server Management", "Server Owner", "Senior Administrator", "Administrator", "Staff")
     async def pm(self, ctx: commands.Context, user_id: int, *, message: str):
         """Sends a DM to a user
 
