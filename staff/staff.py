@@ -1,6 +1,7 @@
 import discord
 from redbot.core import commands, checks, Config
 import random
+from collections import namedtuple
 
 BaseCog = getattr(commands, "Cog", object)
 
@@ -20,7 +21,6 @@ class Staff(BaseCog):
         for member in ctx.guild.members:
             if member.top_role.name == "Lead Administrator":
                 embed.add_field(name="Lead Admin", value=member.display_name, inline=True)
-        embed.add_field(name="Senior Administrator", value="Jamie", inline=True)
         for member in ctx.guild.members:
             if member.top_role.name == "Senior Administrator":
                 embed.add_field(name="Senior Administrator", value=member.display_name, inline=True)
@@ -64,8 +64,7 @@ class Staff(BaseCog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.has_any_role("Moderator", "IG Moderator", "Server Management", "Server Owner", "Senior Administrator",
-                           "Administrator")
+    @commands.has_any_role("Moderator", "Scipter",  "IG Moderator", "Server Management", "Server Owner", "Senior Administrator", "Administrator", "Staff")
     async def pm(self, ctx: commands.Context, user_id: int, *, message: str):
         """Sends a DM to a user
 
@@ -74,21 +73,8 @@ class Staff(BaseCog):
         settings, 'appearance' tab. Then right click a user
         and copy their id"""
         destination = discord.utils.get(ctx.bot.get_all_members(), id=user_id)
-        if destination is None:
-            await ctx.send(
-                _(
-                    "Invalid ID or user not found. You can only "
-                    "send messages to people I share a server "
-                    "with."
-                )
-            )
-            return
-
-        fake_message = namedtuple("Message", "guild")
-        prefixes = await ctx.bot.command_prefix(ctx.bot, fake_message(guild=None))
-        prefix = prefixes[0]
-        description = _("Reply from WC-RP Staff Member {}").format(ctx.author.display_name)
-        content = _("You can reply to this message just by replying here.")
+        description = "Reply from WC-RP Staff Member {}".format(ctx.author.display_name)
+        content = "You can reply to this message just by replying here."
         if await ctx.embed_requested():
             e = discord.Embed(colour=discord.Colour.red(), description=message)
 
@@ -102,17 +88,15 @@ class Staff(BaseCog):
                 await destination.send(embed=e)
             except discord.HTTPException:
                 await ctx.send(
-                    _("Sorry, I couldn't deliver your message to {}").format(destination)
-                )
+                    "Sorry, I couldn't deliver your message to {}").format(destination)
             else:
-                await ctx.send(_("Message delivered to {}").format(destination))
+                await ctx.send("Message delivered to {}".format(destination))
         else:
             response = "{}\nMessage:\n\n{}".format(description, message)
             try:
                 await destination.send("{}\n{}".format(box(response), content))
             except discord.HTTPException:
                 await ctx.send(
-                    _("Sorry, I couldn't deliver your message to {}").format(destination)
-                )
+                    "Sorry, I couldn't deliver your message to {}").format(destination)
             else:
-                await ctx.send(_("Message delivered to {}").format(destination))
+                await ctx.send("Message delivered to {}".format(destination))
