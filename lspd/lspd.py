@@ -2,7 +2,7 @@ from redbot.core import commands, Config
 import discord
 import random
 
-defaults_global = {"apbs": {}, "users": {}}
+defaults_guild = {"apbs": {}, "users": {}}
 
 
 class LSPD(commands.Cog):
@@ -12,7 +12,7 @@ class LSPD(commands.Cog):
         self.bot = bot
         self.config = Config.get_conf(
             self, identifier=146130471346, force_registration=True)
-        self.config.register_global(**defaults_global)
+        self.config.register_guild(**defaults_guild)
 
     @commands.group(autohelp=True)
     async def apb(self, ctx):
@@ -27,13 +27,13 @@ class LSPD(commands.Cog):
         await ctx.send(f"The suspect you have entered is: {name.content}\nPlease now enter the reason for this APB.")
         crimes = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
 
-        async with self.config.apbs() as apb:
+        async with self.config.guild(ctx.guild).apbs() as apb:
             key = name.content
             apb[key] = {"name": name.content, "reason": crimes.content, "officer": ctx.author.display_name,
                         "creator": ctx.author.id}
         await ctx.send("APB Added Successfully.")
 
-        async with self.config.users() as users:
+        async with self.config.guild(ctx.guild), users() as users:
             for user in users:
                 if users[user]:
                     destination = self.bot.get_user(int(user))
@@ -44,10 +44,15 @@ class LSPD(commands.Cog):
     @apb.command()
     async def delete(self, ctx, *, name: str):
         """Remove an APB"""
-        supervisors = [334409039486255105, 334408515076620291, 219112945416667138, 95932766180343808,
-                       169162432739016704, 138526015646466048, 261597186977038337, 307496008189870090,
-                       173781562951860224]
-        async with self.config.apbs() as apb:
+        supervisors = []
+        for member in ctx.guild.members:
+            if member.top_role.name == "High Command":
+                supervisors.append(member.id)
+            elif member.top_role.name == "Command":
+                supervisors.append(member.id)
+            elif member.top_role.name == "Supervisors":
+                supervisors.append(member.id)
+        async with self.config.guild(ctx.guild).apbs() as apb:
             if name not in apb:
                 await ctx.send("User doesn't have an active APB.")
                 return
@@ -60,7 +65,7 @@ class LSPD(commands.Cog):
     @apb.command()
     async def list(self, ctx):
         """List all active APBs"""
-        async with self.config.apbs() as data:
+        async with self.config.guild(ctx.guild).apbs() as data:
             colour = discord.Color.from_hsv(random.random(), 1, 1)
             embed = discord.Embed(
                 title="Current APBs", colour=colour)
@@ -82,7 +87,7 @@ class LSPD(commands.Cog):
     @apb.command()
     async def info(self, ctx, *, name: str):
         """List info on a current suspect."""
-        async with self.config.apbs() as apbs:
+        async with self.config.guild(ctx.guild).apbs() as apbs:
             if name not in apbs:
                 await ctx.send("User doesn't have an active APB.")
                 return
