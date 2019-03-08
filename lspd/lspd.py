@@ -33,7 +33,7 @@ class LSPD(commands.Cog):
                         "creator": ctx.author.id}
         await ctx.send("APB Added Successfully.")
 
-        async with self.config.guild(ctx.guild), users() as users:
+        async with self.config.guild(ctx.guild).users() as users:
             for user in users:
                 if users[user]:
                     destination = self.bot.get_user(int(user))
