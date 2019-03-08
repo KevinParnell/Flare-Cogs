@@ -98,7 +98,7 @@ class LSPD(commands.Cog):
     @apb.command()
     async def notify(self, ctx, status: bool):
         """Enable DM notifications for new APBs"""
-        async with self.config.users() as users:
+        async with self.config.guild(ctx.guild).users() as users:
             key = str(ctx.author.id)
             users[key] = status
             if status:
