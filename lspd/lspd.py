@@ -37,9 +37,10 @@ class LSPD(commands.Cog):
             for user in users:
                 if users[user]:
                     destination = self.bot.get_user(int(user))
-                    await destination.send(
-                        "A new APB has been posted!\n---------------\nSuspect: {}\nReason: {}\nAPB Issued By: {}".format(
-                            name.content, crimes.content, ctx.author.display_name))
+                    if destination in ctx.message.guild.members:
+                        await destination.send(
+                            "A new APB has been posted!\n---------------\nSuspect: {}\nReason: {}\nAPB Issued By: {}".format(
+                                name.content, crimes.content, ctx.author.display_name))
 
     @apb.command()
     async def delete(self, ctx, *, name: str):
