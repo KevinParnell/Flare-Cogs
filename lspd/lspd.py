@@ -157,9 +157,20 @@ class LSPD(commands.Cog):
                 await ctx.send("```py\n{}\n".format(str(page) + "```"))
 
     @commands.command()
-    async def deltime(self, ctx, crime):
+    async def deltime(self, ctx, *, crime: str):
+        """Delete a time"""
         crime = crime.lower()
+        supervisors = []
+        for member in ctx.guild.members:
+            if member.top_role.name == "High Command":
+                supervisors.append(member.id)
+            if member.top_role.name == "Command":
+                supervisors.append(member.id)
+        if ctx.author.id not in supervisors:
+            return
         async with self.config.guild(ctx.guild).times() as times:
             if crime in times:
                 del times[crime]
                 await ctx.send(f"{crime.title()} has been removed from the time list.")
+            else:
+                await ctx.send(f"{crime.title()} was not found in the current time list.")
