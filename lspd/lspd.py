@@ -4,6 +4,7 @@ from fuzzywuzzy import process
 from redbot.core.utils.chat_formatting import pagify
 import discord
 import random
+
 from prettytable import PrettyTable
 
 defaults_guild = {"apbs": {}, "users": {}, "times": {}}
@@ -194,5 +195,7 @@ class LSPD(commands.Cog):
                     fail.append(f"{crime} to {times} = {s}%")
                     if s >= 50:
                         matching.append(f"{crime} > {times}, {s}%")
-        await ctx.send("\n".join(fail))
+        s = "\n".join(fail)
+        for page in pagify(s):
+            await ctx.send(page)
         await ctx.send(matching)
