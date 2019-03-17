@@ -151,7 +151,15 @@ class LSPD(commands.Cog):
         async with self.config.guild(ctx.guild).times() as times:
             t = PrettyTable(["Crime", "Time"])
             for crime in times:
-                t.add_row([crime, times[crime]])
+                t.add_row([crime.title(), times[crime]])
 
             for page in pagify(str(t)):
                 await ctx.send("```py\n{}\n".format(str(page) + "```"))
+
+    @commands.command()
+    async def deltime(self, ctx, crime):
+        crime = crime.lower()
+        async with self.config.guild(ctx.guild).times() as times:
+            if crime in times:
+                del times[crime]
+                await ctx.send(f"{crime.title()} has been removed from the time list.")
