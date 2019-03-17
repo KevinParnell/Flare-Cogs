@@ -2,7 +2,7 @@ from redbot.core import commands, Config
 import discord
 import random
 
-defaults_guild = {"apbs": {}, "users": {}}
+defaults_guild = {"apbs": {}, "users": {}, "times": {}}
 
 
 class LSPD(commands.Cog):
@@ -33,7 +33,7 @@ class LSPD(commands.Cog):
                         "creator": ctx.author.id}
         await ctx.send("APB Added Successfully.")
 
-        async with self.config.guild(ctx.guild), users() as users:
+        async with self.config.guild(ctx.guild).users() as users:
             for user in users:
                 if users[user]:
                     destination = self.bot.get_user(int(user))
@@ -105,3 +105,22 @@ class LSPD(commands.Cog):
                 await ctx.send("You've enabled DM notifications for new APBs.")
             else:
                 await ctx.send("You've disabled DM notifications for new APBs.")
+
+    @commands.command()
+    async def time(self, ctx, *, crimes: str):
+        crimes = crimes.split(",")
+        time = 0
+        fail = []
+        times = {"test": 60, "chea": 3, "111": 12}
+        for crime in crimes:
+            if crime.lstrip() in times:
+                time += times[crime.lstrip()]
+            else:
+                fail.append(crime.lstrip())
+        await ctx.send(time)
+        await ctx.send(crimes)
+        if fail:
+            await ctx.send("The following crimes were not recognized:\n" + "\n".join(fail))
+
+    @commands.command()
+    async def addtime(self, ctx, time: int, *, crime: str):
