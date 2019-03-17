@@ -147,6 +147,7 @@ class LSPD(commands.Cog):
 
     @commands.command()
     async def listtimes(self, ctx):
+        """List times for the current guild."""
         async with self.config.guild(ctx.guild).times() as times:
             t = PrettyTable(["Crime", "Time"])
             for crime in times:
