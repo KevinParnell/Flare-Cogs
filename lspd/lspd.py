@@ -1,5 +1,6 @@
-from redbot.core import commands, Config
-
+from redbot.core import commands, Config, checks
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 from redbot.core.utils.chat_formatting import pagify
 import discord
 import random
@@ -16,6 +17,9 @@ class LSPD(commands.Cog):
         self.config = Config.get_conf(
             self, identifier=146130471346, force_registration=True)
         self.config.register_guild(**defaults_guild)
+
+    def similar(self, a, b):
+        return SequenceMatcher(None, a, b)
 
     @commands.group(autohelp=True)
     async def apb(self, ctx):
@@ -175,3 +179,20 @@ class LSPD(commands.Cog):
                 await ctx.send(f"{crime.title()} has been removed from the time list.")
             else:
                 await ctx.send(f"{crime.title()} was not found in the current time list.")
+
+    @checks.is_owner()
+    @commands.command()
+    async def match(self, ctx, *, crimes: str):
+        """test"""
+        crimes = crimes.split(",")
+        fail = []
+        matching = []
+        async with self.config.guild(ctx.guild).times() as time:
+            for crime in crimes:
+                for times in time:
+                    s = fuzz.token_sort_ratio(crime, times)
+                    fail.append(f"{crime} to {times} = {s}%")
+                    if s >= 50:
+                        matching.append(f"{crime} > {times}, {s}%")
+        await ctx.send("\n".join(fail))
+        await ctx.send(matching)
