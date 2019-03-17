@@ -112,7 +112,8 @@ class LSPD(commands.Cog):
 
     @commands.command(aliases=["times"])
     async def time(self, ctx, *, crimes: str):
-        """Max jail time program"""
+        """Penal Code Calculator - seperate multiple crimes with ,
+           Example - [p]time murder, evasion, GTA"""
         crimes = crimes.split(",")
         fail = []
         async with self.config.guild(ctx.guild).times() as time:
