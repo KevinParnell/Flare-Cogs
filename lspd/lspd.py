@@ -1,6 +1,9 @@
 from redbot.core import commands, Config
+
+from redbot.core.utils.chat_formatting import pagify
 import discord
 import random
+from prettytable import PrettyTable
 
 defaults_guild = {"apbs": {}, "users": {}, "times": {}}
 
@@ -107,21 +110,47 @@ class LSPD(commands.Cog):
             else:
                 await ctx.send("You've disabled DM notifications for new APBs.")
 
-    @commands.command()
+    @commands.command(aliases=["times"])
     async def time(self, ctx, *, crimes: str):
+        """Max jail time program"""
         crimes = crimes.split(",")
-        time = 0
         fail = []
-        times = {"test": 60, "chea": 3, "111": 12}
-        for crime in crimes:
-            if crime.lstrip() in times:
-                time += times[crime.lstrip()]
-            else:
-                fail.append(crime.lstrip())
-        await ctx.send(time)
-        await ctx.send(crimes)
+        async with self.config.guild(ctx.guild).times() as time:
+            totaltime = 0
+            for crime in crimes:
+                crime = crime.lower().lstrip()
+                if crime in time:
+                    totaltime += time[crime]
+                else:
+                    fail.append(crime.lstrip())
+        if totaltime <= 60:
+            await ctx.send(f"The maximum time would be {totaltime} minutes.")
+        else:
+            await ctx.send(f"The maximum time would be {totaltime} minutes however WC-RP forces a 60 minutes max rule.")
         if fail:
             await ctx.send("The following crimes were not recognized:\n" + "\n".join(fail))
 
-    @commands.command()
+    @commands.command(aliases=["addtimes"])
     async def addtime(self, ctx, time: int, *, crime: str):
+        """Add a time to the database"""
+        supervisors = []
+        for member in ctx.guild.members:
+            if member.top_role.name == "High Command":
+                supervisors.append(member.id)
+            if member.top_role.name == "Command":
+                supervisors.append(member.id)
+        if ctx.author.id not in supervisors:
+            return
+        async with self.config.guild(ctx.guild).times() as times:
+            times[crime.lower()] = time
+            await ctx.send(f"The crime {crime} with a max time of {time} has been added to the system.")
+
+    @commands.command()
+    async def listtimes(self, ctx):
+        async with self.config.guild(ctx.guild).times() as times:
+            t = PrettyTable(["Crime", "Time"])
+            for crime in times:
+                t.add_row([crime, times[crime]])
+
+            for page in pagify(str(t)):
+                await ctx.send("```py\n{}\n".format(str(page) + "```"))
