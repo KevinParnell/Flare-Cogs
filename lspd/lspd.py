@@ -1,13 +1,11 @@
 from redbot.core import commands, Config, checks
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
 from redbot.core.utils.chat_formatting import pagify
 import discord
 import random
 
 from prettytable import PrettyTable
 
-defaults_guild = {"apbs": {}, "users": {}, "times": {}}
+defaults_guild = {"apbs": {}, "users": {}, "times": {}, "tickets": {}}
 
 
 class LSPD(commands.Cog):
@@ -18,9 +16,6 @@ class LSPD(commands.Cog):
         self.config = Config.get_conf(
             self, identifier=146130471346, force_registration=True)
         self.config.register_guild(**defaults_guild)
-
-    def similar(self, a, b):
-        return SequenceMatcher(None, a, b)
 
     @commands.group(autohelp=True)
     async def apb(self, ctx):
@@ -181,21 +176,67 @@ class LSPD(commands.Cog):
             else:
                 await ctx.send(f"{crime.title()} was not found in the current time list.")
 
-    @checks.is_owner()
     @commands.command()
-    async def match(self, ctx, *, crimes: str):
-        """test"""
-        crimes = crimes.split(",")
+    async def price(self, ctx, *, tickets: str):
+        """TicketCalculator - seperate multiple crimes with ,"""
+        tickets = tickets.split(",")
         fail = []
-        matching = []
-        async with self.config.guild(ctx.guild).times() as time:
-            for crime in crimes:
-                for times in time:
-                    s = fuzz.token_sort_ratio(crime, times)
-                    fail.append(f"{crime} to {times} = {s}%")
-                    if s >= 50:
-                        matching.append(f"{crime} > {times}, {s}%")
-        s = "\n".join(fail)
-        for page in pagify(s):
-            await ctx.send(page)
-        await ctx.send(matching)
+        async with self.config.guild(ctx.guild).tickets() as ticketprices:
+            totaltime = 0
+            for ticket in tickets:
+                ticket = ticket.lower().lstrip()
+                if ticket in ticketprices:
+                    totaltime += ticketprices[icket]
+                else:
+                    fail.append(ticket.lstrip())
+        if totaltime <= 60:
+            await ctx.send(f"The maximum price would be ${totaltime}.")
+        else:
+            await ctx.send(f"The maximum price would be {totaltime} however WC-RP forces a $9999 minutes max price.")
+        if fail:
+            await ctx.send("The following tickets were not recognized:\n" + "\n".join(fail))
+
+    @commands.command()
+    async def addticket(self, ctx, price: int, *, ticket: str):
+        """Add a ticket to the database"""
+        supervisors = []
+        for member in ctx.guild.members:
+            if member.top_role.name == "High Command":
+                supervisors.append(member.id)
+            if member.top_role.name == "Command":
+                supervisors.append(member.id)
+        if ctx.author.id not in supervisors:
+            return
+        async with self.config.guild(ctx.guild).tickets() as tickets:
+            tickets[ticket.lower()] = price
+            await ctx.send(f"The ticket {ticket} with a max price of {price} has been added to the system.")
+
+    @commands.command()
+    async def delticket(self, ctx, *, ticket: str):
+        """Delete a ticket"""
+        ticket = ticket.lower()
+        supervisors = []
+        for member in ctx.guild.members:
+            if member.top_role.name == "High Command":
+                supervisors.append(member.id)
+            if member.top_role.name == "Command":
+                supervisors.append(member.id)
+        if ctx.author.id not in supervisors:
+            return
+        async with self.config.guild(ctx.guild).tickets() as tickets:
+            if ticket in tickets:
+                del tickets[ticket]
+                await ctx.send(f"{ticket.title()} has been removed from the price list.")
+            else:
+                await ctx.send(f"{ticket.title()} was not found in the current price list.")
+
+    @commands.command()
+    async def listtimes(self, ctx):
+        """List times for the current guild."""
+        async with self.config.guild(ctx.guild).tickets() as tickets:
+            t = PrettyTable(["Tickets", "Price"])
+            for ticket in tickets:
+                t.add_row([ticket.title(), tickets[ticket]])
+
+            for page in pagify(str(t)):
+                await ctx.send("```py\n{}\n".format(str(page) + "```"))
