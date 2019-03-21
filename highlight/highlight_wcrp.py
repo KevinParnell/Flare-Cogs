@@ -6,12 +6,12 @@ class Highlightfoco(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.config = Config.get_conf(self, identifier=1398467138476)
+        self.config = Config.get_conf(self, identifier=1398467138476, force_registration=True)
         default_global = {"highlight": {}, "toggle": {"status": True}}
         self.config.register_global(**default_global)
 
     async def on_message(self, message):
-        channels = [548168416075186176, 548168191235325963, 548168256540770304]
+        channels = [461965008536862720]
         if message.channel.id in channels:
             async with self.config.highlight() as highlight:
                 for user in highlight:
