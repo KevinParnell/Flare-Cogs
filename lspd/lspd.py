@@ -13,9 +13,7 @@ class LSPD(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.config = Config.get_conf(
-            self, identifier=146130471346, force_registration=True
-        )
+        self.config = Config.get_conf(self, identifier=146130471346, force_registration=True)
         self.config.register_guild(**defaults_guild)
 
     @commands.group(autohelp=True)
@@ -73,10 +71,7 @@ class LSPD(commands.Cog):
             if name not in apb:
                 await ctx.send("User doesn't have an active APB.")
                 return
-            if (
-                ctx.author.id == apb[f"{name}"]["creator"]
-                or ctx.author.id in supervisors
-            ):
+            if ctx.author.id == apb[f"{name}"]["creator"] or ctx.author.id in supervisors:
                 del apb[f"{name}"]
                 await ctx.send("APB removed.")
             else:
@@ -91,34 +86,22 @@ class LSPD(commands.Cog):
             for name in data:
                 if len(data[name]["name"]) > 20:
                     embed.add_field(
-                        name="Reason:",
-                        value=f"{data[name]['name'][:20]}...",
-                        inline=True,
+                        name="Reason:", value=f"{data[name]['name'][:20]}...", inline=True
                     )
                 else:
-                    embed.add_field(
-                        name="Suspect:", value=data[name]["name"], inline=True
-                    )
+                    embed.add_field(name="Suspect:", value=data[name]["name"], inline=True)
                 if len(data[name]["reason"]) > 20:
                     embed.add_field(
-                        name="Reason:",
-                        value=f"{data[name]['reason'][:20]}...",
-                        inline=True,
+                        name="Reason:", value=f"{data[name]['reason'][:20]}...", inline=True
                     )
                 else:
-                    embed.add_field(
-                        name="Reason:", value=data[name]["reason"], inline=True
-                    )
+                    embed.add_field(name="Reason:", value=data[name]["reason"], inline=True)
                 if len(data[name]["officer"]) > 20:
                     embed.add_field(
-                        name="Reason:",
-                        value=f"{data[name]['officer'][:20]}...",
-                        inline=True,
+                        name="Reason:", value=f"{data[name]['officer'][:20]}...", inline=True
                     )
                 else:
-                    embed.add_field(
-                        name="Officer:", value=data[name]["officer"], inline=True
-                    )
+                    embed.add_field(name="Officer:", value=data[name]["officer"], inline=True)
             await ctx.send(embed=embed)
 
     @apb.command()
@@ -166,9 +149,7 @@ class LSPD(commands.Cog):
                 f"The maximum time would be {totaltime} minutes however WC-RP forces a 60 minutes max rule."
             )
         if fail:
-            await ctx.send(
-                "The following crimes were not recognized:\n" + "\n".join(fail)
-            )
+            await ctx.send("The following crimes were not recognized:\n" + "\n".join(fail))
 
     @commands.command(aliases=["addtimes"])
     async def addtime(self, ctx, time: int, *, crime: str):
@@ -215,9 +196,7 @@ class LSPD(commands.Cog):
                 del times[crime]
                 await ctx.send(f"{crime.title()} has been removed from the time list.")
             else:
-                await ctx.send(
-                    f"{crime.title()} was not found in the current time list."
-                )
+                await ctx.send(f"{crime.title()} was not found in the current time list.")
 
     @commands.command()
     async def price(self, ctx, *, tickets: str):
@@ -239,9 +218,7 @@ class LSPD(commands.Cog):
                 f"The maximum price would be {totaltime} however WC-RP forces a $9999 minutes max price."
             )
         if fail:
-            await ctx.send(
-                "The following tickets were not recognized:\n" + "\n".join(fail)
-            )
+            await ctx.send("The following tickets were not recognized:\n" + "\n".join(fail))
 
     @commands.command()
     async def addticket(self, ctx, price: int, *, ticket: str):
@@ -275,13 +252,9 @@ class LSPD(commands.Cog):
         async with self.config.guild(ctx.guild).tickets() as tickets:
             if ticket in tickets:
                 del tickets[ticket]
-                await ctx.send(
-                    f"{ticket.title()} has been removed from the price list."
-                )
+                await ctx.send(f"{ticket.title()} has been removed from the price list.")
             else:
-                await ctx.send(
-                    f"{ticket.title()} was not found in the current price list."
-                )
+                await ctx.send(f"{ticket.title()} was not found in the current price list.")
 
     @commands.command()
     async def listtimes(self, ctx):

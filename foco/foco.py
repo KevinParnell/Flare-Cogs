@@ -36,16 +36,7 @@ class Foco(BaseCog):
 
     @commands.command(
         pass_context=True,
-        aliases=[
-            "serverip",
-            "ips",
-            "foco",
-            "ftdm",
-            "site",
-            "website",
-            "forum",
-            "forums",
-        ],
+        aliases=["serverip", "ips", "foco", "ftdm", "site", "website", "forum", "forums"],
     )
     async def ip(self, ctx):
         """FoCo's server IP."""
