@@ -34,8 +34,19 @@ class Foco(BaseCog):
             playerss = f"Current Players: {players}/400"
             await channel.edit(name=f"{playerss}")
 
-    @commands.command(pass_context=True,
-                      aliases=["serverip", "ips", "foco", "ftdm", "site", "website", "forum", "forums"])
+    @commands.command(
+        pass_context=True,
+        aliases=[
+            "serverip",
+            "ips",
+            "foco",
+            "ftdm",
+            "site",
+            "website",
+            "forum",
+            "forums",
+        ],
+    )
     async def ip(self, ctx):
         """FoCo's server IP."""
 
@@ -55,13 +66,20 @@ class Foco(BaseCog):
     async def rules(self, ctx):
         """FoCo's server rules."""
 
-        embed = discord.Embed(title="FoCoTDM Rules", colour=0xff6a14,
-                              description="**FoCo Team Deathmatch Brief**\n\nThe Carnage Clan is proud to announce the revival of the revolutionary and notorious TDM server initially founded by Shaney and Wazza in 2011, **FoCo TDM**.")
-        embed.add_field(name="**Information**",
-                        value="Welcome to the Discord server of **FoCo TDM**!\nPlease make sure that you've read the rules before joining!")
-        embed.add_field(name="Rules",
-                        value="1. Don't be disrespectful towards the other members of the community. We know, a joke is a joke but don't take it too far.\n2. Keep discussions to relevant text channels.\n3. Don't scream / play annoying distorted audio clips in voice channels.\n4. Promotion of other Discord servers or SA:MP servers is strictly forbidden.\n5. No spamming.\n6. English only.\n\n\nIf you see anyone breaking these rules, please take a screenshot and send it to a **Server Administrator**",
-                        inline=True)
+        embed = discord.Embed(
+            title="FoCoTDM Rules",
+            colour=0xFF6A14,
+            description="**FoCo Team Deathmatch Brief**\n\nThe Carnage Clan is proud to announce the revival of the revolutionary and notorious TDM server initially founded by Shaney and Wazza in 2011, **FoCo TDM**.",
+        )
+        embed.add_field(
+            name="**Information**",
+            value="Welcome to the Discord server of **FoCo TDM**!\nPlease make sure that you've read the rules before joining!",
+        )
+        embed.add_field(
+            name="Rules",
+            value="1. Don't be disrespectful towards the other members of the community. We know, a joke is a joke but don't take it too far.\n2. Keep discussions to relevant text channels.\n3. Don't scream / play annoying distorted audio clips in voice channels.\n4. Promotion of other Discord servers or SA:MP servers is strictly forbidden.\n5. No spamming.\n6. English only.\n\n\nIf you see anyone breaking these rules, please take a screenshot and send it to a **Server Administrator**",
+            inline=True,
+        )
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -69,11 +87,13 @@ class Foco(BaseCog):
         r = "https://api.samp-servers.net/v2/server/185.107.96.114:7779"
         req = await self.get(r)
         players = f"{req['core']['pc']}/{req['core']['pm']}"
-        ip = req['core']['ip']
-        online = req['active']
+        ip = req["core"]["ip"]
+        online = req["active"]
         if online:
             await ctx.send(
                 "**FoCo TDM Status:**\n\n:desktop: IP: {}\n:white_check_mark: Status: **Online**\n:video_game: Players: {}".format(
-                    ip, players))
+                    ip, players
+                )
+            )
         else:
             await ctx.send("FoCo TDM is currently offline.")
