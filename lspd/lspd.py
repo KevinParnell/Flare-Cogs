@@ -9,7 +9,7 @@ defaults_guild = {"apbs": {}, "users": {}, "times": {}, "tickets": {}}
 
 
 class LSPD(commands.Cog):
-    """WC-RP LSPD"""
+    """VCPD"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -18,7 +18,7 @@ class LSPD(commands.Cog):
 
     @commands.group(autohelp=True)
     async def apb(self, ctx):
-        """WC-RP APB Commands"""
+        """APB Commands"""
         pass
 
     @apb.command()
@@ -61,11 +61,11 @@ class LSPD(commands.Cog):
         """Remove an APB"""
         supervisors = []
         for member in ctx.guild.members:
-            if member.top_role.name == "High Command":
+            if member.top_role.name == "Executive Staff":
                 supervisors.append(member.id)
-            elif member.top_role.name == "Command":
+            elif member.top_role.name == "Command Staff":
                 supervisors.append(member.id)
-            elif member.top_role.name == "Supervisors":
+            elif member.top_role.name == "Supervisory Staff":
                 supervisors.append(member.id)
         async with self.config.guild(ctx.guild).apbs() as apb:
             if name not in apb:
@@ -156,9 +156,9 @@ class LSPD(commands.Cog):
         """Add a time to the database"""
         supervisors = []
         for member in ctx.guild.members:
-            if member.top_role.name == "High Command":
+            if member.top_role.name == "Executive Staff":
                 supervisors.append(member.id)
-            if member.top_role.name == "Command":
+            if member.top_role.name == "Command Staff":
                 supervisors.append(member.id)
         if ctx.author.id not in supervisors:
             return
@@ -185,9 +185,9 @@ class LSPD(commands.Cog):
         crime = crime.lower()
         supervisors = []
         for member in ctx.guild.members:
-            if member.top_role.name == "High Command":
+            if member.top_role.name == "Executive Staff":
                 supervisors.append(member.id)
-            if member.top_role.name == "Command":
+            if member.top_role.name == "Command Staff":
                 supervisors.append(member.id)
         if ctx.author.id not in supervisors:
             return
@@ -208,7 +208,7 @@ class LSPD(commands.Cog):
             for ticket in tickets:
                 ticket = ticket.lower().lstrip()
                 if ticket in ticketprices:
-                    totaltime += ticketprices[icket]
+                    totaltime += ticketprices[ticket]
                 else:
                     fail.append(ticket.lstrip())
         if totaltime <= 60:
@@ -225,9 +225,9 @@ class LSPD(commands.Cog):
         """Add a ticket to the database"""
         supervisors = []
         for member in ctx.guild.members:
-            if member.top_role.name == "High Command":
+            if member.top_role.name == "Executive Staff":
                 supervisors.append(member.id)
-            if member.top_role.name == "Command":
+            if member.top_role.name == "Command Staff":
                 supervisors.append(member.id)
         if ctx.author.id not in supervisors:
             return
@@ -243,9 +243,9 @@ class LSPD(commands.Cog):
         ticket = ticket.lower()
         supervisors = []
         for member in ctx.guild.members:
-            if member.top_role.name == "High Command":
+            if member.top_role.name == "Executive Staff":
                 supervisors.append(member.id)
-            if member.top_role.name == "Command":
+            if member.top_role.name == "Command Staff":
                 supervisors.append(member.id)
         if ctx.author.id not in supervisors:
             return
