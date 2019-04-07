@@ -2,6 +2,7 @@ from redbot.core import commands, Config, checks
 from redbot.core.utils.chat_formatting import pagify
 import discord
 import random
+import typing
 
 from prettytable import PrettyTable
 
@@ -142,18 +143,13 @@ class LSPD(commands.Cog):
                     totaltime += time[crime]
                 else:
                     fail.append(crime.lstrip())
-        if totaltime <= 60:
-            await ctx.send(f"The maximum time would be {totaltime} minutes.")
-        else:
-            await ctx.send(
-                f"The maximum time would be {totaltime} minutes however WC-RP forces a 60 minutes max rule."
-            )
+        await ctx.send(f"The maximum time would be {totaltime} minutes.")
         if fail:
             await ctx.send("The following crimes were not recognized:\n" + "\n".join(fail))
 
     @commands.command(aliases=["addtimes"])
     async def addtime(self, ctx, time: int, *, crime: str):
-        """Add a time to the database"""
+        """Add a time to the database - Command Staff +"""
         supervisors = []
         for member in ctx.guild.members:
             if member.top_role.name == "Executive Staff":
@@ -181,7 +177,7 @@ class LSPD(commands.Cog):
 
     @commands.command()
     async def deltime(self, ctx, *, crime: str):
-        """Delete a time"""
+        """Delete a timetimes - Command Staff +"""
         crime = crime.lower()
         supervisors = []
         for member in ctx.guild.members:
@@ -211,18 +207,13 @@ class LSPD(commands.Cog):
                     totaltime += ticketprices[ticket]
                 else:
                     fail.append(ticket.lstrip())
-        if totaltime <= 60:
-            await ctx.send(f"The maximum price would be ${totaltime}.")
-        else:
-            await ctx.send(
-                f"The maximum price would be {totaltime} however WC-RP forces a $9999 minutes max price."
-            )
+        await ctx.send(f"The maximum price would be ${totaltime}.")
         if fail:
             await ctx.send("The following tickets were not recognized:\n" + "\n".join(fail))
 
     @commands.command()
     async def addticket(self, ctx, price: int, *, ticket: str):
-        """Add a ticket to the database"""
+        """Add a ticket to the database - Command Staff +"""
         supervisors = []
         for member in ctx.guild.members:
             if member.top_role.name == "Executive Staff":
@@ -239,7 +230,7 @@ class LSPD(commands.Cog):
 
     @commands.command()
     async def delticket(self, ctx, *, ticket: str):
-        """Delete a ticket"""
+        """Delete a ticket - Command Staff +"""
         ticket = ticket.lower()
         supervisors = []
         for member in ctx.guild.members:
@@ -257,8 +248,8 @@ class LSPD(commands.Cog):
                 await ctx.send(f"{ticket.title()} was not found in the current price list.")
 
     @commands.command()
-    async def listtimes(self, ctx):
-        """List times for the current guild."""
+    async def listtickets(self, ctx):
+        """List tickets for the current guild."""
         async with self.config.guild(ctx.guild).tickets() as tickets:
             t = PrettyTable(["Tickets", "Price"])
             for ticket in tickets:
@@ -266,3 +257,203 @@ class LSPD(commands.Cog):
 
             for page in pagify(str(t)):
                 await ctx.send("```py\n{}\n".format(str(page) + "```"))
+
+    @checks.is_owner()
+    @commands.command()
+    async def convert(self, ctx):
+        lspd = self.bot.get_guild(538426212863967242)
+        async with self.config.guild(lspd).times() as time:
+            async with self.config.guild(ctx.guild).times() as timess:
+                for crime in time:
+                    timess[crime] = time[crime]
+        await ctx.send("Converted")
+
+    @commands.command()
+    async def addunit(self, ctx, unit: str, officers: commands.Greedy[discord.Member]):
+        """Allow CO's to add division ranks."""
+        teuc = 492941946554155028
+        auc = 492942018058649602
+        csuc = 492941760473989120
+        isuc = 492942173407543308
+        giuc = 454959597812318209
+        rsuc = 432610381379141654
+        tuc = 492942419944538112
+        if unit.lower() == "teu":
+            for role in ctx.author.roles:
+                if role.id == teuc:
+                    teu = 492941884394569739
+                    teurole = discord.utils.get(ctx.guild.roles, id=teu)
+                    for officer in officers:
+                        try:
+                            await officer.add_roles(teurole,
+                                                    reason=f"{unit.upper()} role given to {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"TEU role given to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "au":
+            for role in ctx.author.roles:
+                if role.id == auc:
+                    au = 492942073700417547
+                    teurole = discord.utils.get(ctx.guild.roles, id=au)
+                    for officer in officers:
+                        try:
+                            await officer.add_roles(teurole,
+                                                    reason=f"{unit.upper()} role given to {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"AU role given to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "csu":
+            for role in ctx.author.roles:
+                if role.id == csuc:
+                    csu = 492941595620933633
+                    teurole = discord.utils.get(ctx.guild.roles, id=csu)
+                    for officer in officers:
+                        try:
+                            await officer.add_roles(teurole,
+                                                    reason=f"{unit.upper()} role given to {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"CSU role given to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "isu":
+            for role in ctx.author.roles:
+                if role.id == isuc:
+                    isu = 492942139475361803
+                    teurole = discord.utils.get(ctx.guild.roles, id=isu)
+                    for officer in officers:
+                        try:
+                            await officer.add_roles(teurole,
+                                                    reason=f"{unit.upper()} role given to {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"ISU role given to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "giu":
+            for role in ctx.author.roles:
+                if role.id == giuc:
+                    giu = 454959515495038997
+                    teurole = discord.utils.get(ctx.guild.roles, id=giu)
+                    for officer in officers:
+                        try:
+                            await officer.add_roles(teurole,
+                                                    reason=f"{unit.upper()} role given to {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"GIU role given to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "rsu":
+            for role in ctx.author.roles:
+                if role.id == rsuc:
+                    rsu = 432609459852935168
+                    teurole = discord.utils.get(ctx.guild.roles, id=rsu)
+                    for officer in officers:
+                        try:
+                            await officer.add_roles(teurole,
+                                                    reason=f"{unit.upper()} role given to {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"RSU role given to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "tu":
+            for role in ctx.author.roles:
+                if role.id == tuc:
+                    tu = 492942456359223316
+                    teurole = discord.utils.get(ctx.guild.roles, id=tu)
+                    for officer in officers:
+                        try:
+                            await officer.add_roles(teurole,
+                                                    reason=f"{unit.upper()} role given to {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"TU role given to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+
+    @commands.command()
+    async def removeunit(self, ctx, unit: str, officers: commands.Greedy[discord.Member]):
+        """Allow CO's to remove division ranks."""
+        teuc = 492941946554155028
+        auc = 492942018058649602
+        csuc = 492941760473989120
+        isuc = 492942173407543308
+        giuc = 454959597812318209
+        rsuc = 432610381379141654
+        tuc = 492942419944538112
+        if unit.lower() == "teu":
+            for role in ctx.author.roles:
+                if role.id == teuc:
+                    teu = 492941884394569739
+                    teurole = discord.utils.get(ctx.guild.roles, id=teu)
+                    for officer in officers:
+                        try:
+                            await officer.remove_roles(teurole,
+                                                       reason=f"{unit.upper()} role removed from {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"TEU role removed from {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "au":
+            for role in ctx.author.roles:
+                if role.id == auc:
+                    au = 492942073700417547
+                    teurole = discord.utils.get(ctx.guild.roles, id=au)
+                    for officer in officers:
+                        try:
+                            await officer.remove_roles(teurole,
+                                                       reason=f"AU role removed from {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"AU role removed from {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "csu":
+            for role in ctx.author.roles:
+                if role.id == csuc:
+                    csu = 492941595620933633
+                    teurole = discord.utils.get(ctx.guild.roles, id=csu)
+                    for officer in officers:
+                        try:
+                            await officer.remove_roles(teurole,
+                                                       reason=f"CSU role removed from {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"CSU role removed from {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "isu":
+            for role in ctx.author.roles:
+                if role.id == isuc:
+                    isu = 492942139475361803
+                    teurole = discord.utils.get(ctx.guild.roles, id=isu)
+                    for officer in officers:
+                        try:
+                            await officer.remove_roles(teurole,
+                                                       reason=f"ISU role removed from {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"ISU role removed from {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "giu":
+            for role in ctx.author.roles:
+                if role.id == giuc:
+                    giu = 454959515495038997
+                    teurole = discord.utils.get(ctx.guild.roles, id=giu)
+                    for officer in officers:
+                        try:
+                            await officer.remove_roles(teurole,
+                                                       reason=f"GIU role removed from {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"GIU role removed from to {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "rsu":
+            for role in ctx.author.roles:
+                if role.id == rsuc:
+                    rsu = 432609459852935168
+                    teurole = discord.utils.get(ctx.guild.roles, id=rsu)
+                    for officer in officers:
+                        try:
+                            await officer.remove_roles(teurole,
+                                                       reason=f"RSU role removed from {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"RSU role removed from {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
+        elif unit.lower() == "tu":
+            for role in ctx.author.roles:
+                if role.id == tuc:
+                    tu = 492942456359223316
+                    teurole = discord.utils.get(ctx.guild.roles, id=tu)
+                    for officer in officers:
+                        try:
+                            await officer.remove_roles(teurole,
+                                                       reason=f"TU role removed from {officer.display_name} by {ctx.author.display_name}.")
+                            await ctx.send(f"TU role removed from {officer.display_name} successfully.")
+                        except:
+                            await ctx.send("Request failed.")
