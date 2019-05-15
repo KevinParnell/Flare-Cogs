@@ -21,7 +21,6 @@ class Modmail(commands.Cog):
                 channel = self.bot.get_channel(modmail[stats])
                 await channel.send(embed=embed2)
 
-    @commands.Cog.listener()
     async def on_message(self, message):
         if message.guild is not None:
             return
